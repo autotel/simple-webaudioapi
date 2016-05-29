@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello web audio</title>
+  </head>
+  <body>
+  </body>
+  <script src="mouse.js"></script>
+  <script>
+
+
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+var delay= audioCtx.createDelay(5);
+delay.delayTime.value = 0.09;
+var delayFeedback = audioCtx.createGain();
+delayFeedback.gain.value=0.79;
+
+var volume = audioCtx.createGain();
+
+var sinea = audioCtx.createOscillator();
+sinea.frequency.value = 440;
+sinea.type = "sine";
+sinea.start();
+sinea.connect(volume);
+
+ var sineb = audioCtx.createOscillator();
+ sineb.frequency.value = 523.25;
+ sineb.type = "sine";
+ sineb.start();
+ sineb.connect(volume);
+
+ var sinec = audioCtx.createOscillator();
+ sinec.frequency.value = 698.46;
+ sinec.type = "sine";
+ sinec.start();
+ sinec.connect(volume);
+
+volume.connect(delay);
+volume.connect(audioCtx.destination);
+delayFeedback.connect(volume);
+delay.connect(delayFeedback);
+delayFeedback.connect(delay);
+
+volume.gain.value=0.2;
+
+
+mouse.onMouseMove=function(event){
+  sinea.frequency.value = event.pageX/1000.00*440;
+  sineb.frequency.value = event.pageX/1000.00*523.25;
+  sinec.frequency.value = event.pageX/1000.00*698.46;
+  delayFeedback.gain.value=Math.max(0.7,event.pageY/700.00);
+};
+  </script>
+</html>
